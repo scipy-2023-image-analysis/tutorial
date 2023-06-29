@@ -17,7 +17,7 @@ You can install the requirements for this workshop in two ways:
 
 To use [conda](https://docs.conda.io/en/latest/) or
 [mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html), use the
-provided `environment.yml` file, for example:
+provided `environment.yml` file. For example:
 
 ```
 conda env create -f environment.yml
@@ -44,12 +44,13 @@ python -m pip install -r requirements.txt
 If you have installed everything correctly, you should be able to run:
 
 ```
-jupyter notebook workshop/setup.md
+python test-env.py
 ```
 
-and run the commands in that notebook without error. At the end, you should be
-able to see a [napari](https://napari.org/dev) viewer with a 2-color, 3D image
-of cells.
+Some of the libraries take a while to run the first time, so be patient. You
+should see (1) a matplotlib window with three image panels pop up; when you
+close this, (2) a napari window showing the same coins image should show up.
+When you close this, the script should finish without errors.
 
 ## Running this workshop
 
