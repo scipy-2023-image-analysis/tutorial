@@ -1,11 +1,15 @@
-name: workshop
+name: image-analysis-23
 channels:
   - conda-forge
 dependencies:
+  - python=3.10
+  - pip
   - jupyterlab
   - jupytext
-  - napari
-  - pip
+  - matplotlib
+  - napari=0.4.17
+  - scikit-image=0.20.0
+  - jupyter-book=0.15.1
+  - napari-animation
   - pip:
-    - jupyter-book
-    - napari-animation
+    - napari==0.4.18rc2
