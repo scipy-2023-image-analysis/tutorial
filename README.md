@@ -1,27 +1,61 @@
-# napari-workshop-template
+# image analysis and visualization in Python with scikit-image, napari, and
+# friends
 
-A JupyterBook template for napari workshops.
+## A SciPy 2023 tutorial
 
-**To see the built website, go to
-https://<your_github_username>.github.io/napari-workshop-template**. For
-example, see this template [here](https://napari.org/napari-workshop-template/home.html).
+See the [tutorial page on the SciPy 2023
+site](https://cfp.scipy.org/2023/talk/NEUUKG/) for details.
 
-**To see a live version where you can execute the notebooks on your browser, use [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/napari/napari-workshop-template/main)** (make sure this link points to your own repository!)
+## installation
 
-## What is this repository?
+⚠️ WARNING: You should reinstall this just before the conference as we might
+have made some changes by then. ⚠️
 
-This repository is meant to be [forked](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and edited so that you have a starting point when creating your own napari workshop. All instructions below are meant to be executed _on your own fork_, so that you have a copy of the template that you can adjust to your needs.
+You can install the requirements for this workshop in two ways:
 
-You can also click the `Use this template` button in the GitHub web interface for this repository:
+### using conda/mamba
 
-![Use this template button on GitHub interface](napari-workshops/docs/images/00-template.png)
+To use [conda](https://docs.conda.io/en/latest/) or
+[mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html), use the
+provided `environment.yml` file, for example:
 
-Once you have created your workshop, if you would like the event to be listed [in napari.org](https://napari.org/stable/further-resources/napari-workshops.html), feel free to submit a pull request to https://github.com/napari/docs
+```
+conda env create -f environment.yml
+```
 
-## Documentation
+then:
 
-To learn more about how to build, publish, share and cite your workshop materials, check the [Build your own workshop section](https://napari.github.io/napari-workshop-template/docs/build_your_workshop.html).
+```
+conda activate image-analysis-23
+```
 
-## Contributing to this repository
+### using your own environment manager
 
-If you find typos, incomplete or misleading instructions, or have suggestions for improvements to this template, open an issue at the napari/napari-workshop-template repo.
+If you want to install into your own environment (as a reminder, never install
+to your operating system's system-wide Python install; if you don't know what
+this means, use conda as described above), you can use:
+
+```
+python -m pip install -r requirements.txt
+```
+
+## Checking that your installation works
+
+If you have installed everything correctly, you should be able to run:
+
+```
+jupyter notebook workshop/setup.md
+```
+
+and run the commands in that notebook without error. At the end, you should be
+able to see a [napari](https://napari.org/dev) viewer with a 2-color, 3D image
+of cells.
+
+## Running this workshop
+
+This workshop uses .md files to represent jupyter notebooks managed by
+[jupytext](https://jupytext.readthedocs.io/en/latest/). Once you have installed
+jupytext (as per the instructions above), the experience should be the same as
+using a regular Jupyter notebook: launch jupyter notebook or jupyter lab, go to
+the "notebooks" folder, and click on each notebook as instructed by the tutors.
+
