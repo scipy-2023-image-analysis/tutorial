@@ -6,6 +6,7 @@ dependencies:
   - pip
   - jupyterlab
   - jupytext
+  - notebook
   - matplotlib
   - napari=0.4.17
   - scikit-image=0.20.0
