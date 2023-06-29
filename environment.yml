@@ -12,5 +12,7 @@ dependencies:
   - scikit-image=0.20.0
   - jupyter-book=0.15.1
   - napari-animation
+  - pooch==1.7.0
+  - scikit-learn==1.2.2
   - pip:
     - napari==0.4.18rc2
