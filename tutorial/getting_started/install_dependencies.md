@@ -1,4 +1,5 @@
-# Python setup & dependency installation
+(install-dependencies)=
+# Install Python and dependencies
 
 ```{tip}
 If you have any issues with installation, head over to our Zulip servers where we can help you get
@@ -160,3 +161,16 @@ follow the installation instructions below.
    conda install -f environment.yml
    ```
 ````
+
+## Checking that your installation works
+
+If you have installed everything correctly, you should be able to run:
+
+```
+python test-env.py
+```
+
+Some of the libraries take a while to run the first time, so be patient. You
+should see (1) a matplotlib window with three image panels pop up; when you
+close this, (2) a napari window showing the same coins image should show up.
+When you close this, the script should finish without errors.

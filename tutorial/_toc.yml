@@ -3,20 +3,17 @@
 
 format: jb-book
 root: home
-chapters:
-- file: docs/build_your_workshop
-  sections:
-  - file: docs/deployment_guide
-  - file: docs/launching_binder
-- file: getting_started
-  sections:
-  - file: installation
-  - file: notebook_setup
-- file: notebooks/index
-  sections:
-  - file: notebooks/intro_bioimage_visualization
-  - file: notebooks/spot_detection
-  - file: notebooks/segmenting_and_measuring_nuclei_stardist
-  - file: notebooks/manual_annotation
-  - file: notebooks/custom_colormaps
-- file: make_a_simple_plugin
+parts:
+  - caption: Getting started
+    chapters:
+      - file: getting_started/download_tutorial
+      - file: getting_started/install_dependencies
+      - file: getting_started/launch_notebooks
+  - caption: Tutorial notebooks
+    chapters:
+    - file: notebooks/images_are_arrays
+    - file: notebooks/image_filtering
+    - file: notebooks/segmentation_and_measuring
+#    - file: notebooks/segmenting_and_measuring_nuclei_stardist
+#    - file: notebooks/manual_annotation
+#    - file: notebooks/custom_colormaps
