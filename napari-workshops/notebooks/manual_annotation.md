@@ -67,7 +67,7 @@ nbscreenshot(viewer)
 
 ## Annotating dividing and non-dividing cells using the points layer
 
-One simple task that a biologist or bioimage analyst might be interseted in annotating each cell as diving or non-dividng.
+One simple task that a biologist or bioimage analyst might be interested in annotating each cell as diving or non-dividng.
 
 In order to do this we are going to add two points layers to the viewer, one called `dividing` and one called `non-dividing` and set some basic properties on these layers.
 
