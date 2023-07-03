@@ -1,5 +1,5 @@
 (launch-notebooks)=
-# Launching this tutorial's Jupyter notebooks
+# Prep 3: Launching this tutorial's Jupyter notebooks
 
 During this tutorial, we will be working through a set of Jupyter notebooks.
 On this page, we will launch the `jupyter notebook` application.
