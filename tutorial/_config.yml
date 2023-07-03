@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: Image analysis and visualization in Python with scikit-image, napari, and friends
-author: Tutorial mentors
+author: Juan Nunez-Iglesias, Kira Evans, Lars Grüter, and previous contributors
 logo: logo.ico
 
 # Only build files in the table of contents.
