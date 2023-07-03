@@ -109,13 +109,7 @@ as well and you can skip to the next section.
     If you successfully activated the environment, you should now see
    `(image-analysis-23)` to the left of your command prompt.
 
-4. If you are on a Mac, please install this one additional dependency.
-
-    ```python
-    conda install -c conda-forge python.app
-    ```
-
-5. Test that your notebook installation is working. We will be using notebooks
+4. Test that your notebook installation is working. We will be using notebooks
    for interactive analysis. Enter the command below and it should launch the
    `jupyter notebook` application in a web browser. Once you've confirmed it
    launches, close the web browser and press `ctrl+c` in the terminal window to
@@ -125,20 +119,12 @@ as well and you can skip to the next section.
     jupyter notebook
     ```
 
-6. Test your napari installation. Enter the command below and an empty napari
-   viewer should open. You can close the window after it opens. Please note that
-   it takes a bit of extra time to launch napari the first time.
-    
-    ```bash
-    napari
-    ```
-
 ````{admonition} Errors launching?
 Sometimes, `napari` installation can fail on an M1 Mac due to mismatching
 dependencies on `pip`.
 
-If you get an error at step 4 above, or can't launch `napari` after
-installation, you should try to delete your `napari-tutorial` environment, and
+If you get an error above, or can't launch `napari` after
+installation, you should try to delete your `image-analysis-23` environment, and
 follow the installation instructions below.
 
 1. Delete your `image-analysis-23` environment
