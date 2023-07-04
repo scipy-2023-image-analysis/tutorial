@@ -1,11 +1,10 @@
 ---
 jupytext:
-  formats: ipynb,md:myst
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.7
+    jupytext_version: 1.14.6
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -13,17 +12,15 @@ kernelspec:
 ---
 
 ```{code-cell} ipython3
+:tags: [hide-cell]
+
 %matplotlib inline
 %config InlineBackend.figure_format = 'retina'
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-# Part 2: Image filtering
-
-+++ {"slideshow": {"slide_type": "slide"}}
-
-## Image filtering theory
+# Image filtering
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -31,7 +28,7 @@ Filtering is one of the most basic and common image operations in image processi
 
 +++ {"slideshow": {"slide_type": "fragment"}}
 
-### Local filtering
+## Local filtering
 
 ```{code-cell} ipython3
 ---
@@ -40,8 +37,6 @@ slideshow:
 ---
 import matplotlib.pyplot as plt
 import numpy as np
-
-plt.rcParams['image.cmap'] = 'gray'
 ```
 
 +++ {"slideshow": {"slide_type": "notes"}}
@@ -64,7 +59,7 @@ ax.margins(y=0.1)
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
-Now add some noise to this signal:
+Next we add some noise to this signal:
 
 ```{code-cell} ipython3
 ---
@@ -148,6 +143,7 @@ def convolve_demo(signal, kernel):
         ax.scatter(np.arange(i, i+ksize),
                    signal[i : i+ksize])
         ax.scatter(i, convolved[i])
+        plt.show()
     return filter_step
 
 from ipywidgets import interact, widgets
@@ -217,6 +213,7 @@ def convolve_demo_same(signal, kernel):
         ax.scatter(i, convolved[i])
         ax.set_xlim(-ksize // 2,
                     len(signal) + ksize // 2)
+        plt.show()
     return filter_step
 
 
@@ -227,15 +224,17 @@ interact(convolve_demo_same(noisy_signal, mean_kernel11),
          i=i_slider);
 ```
 
-**Exercise** Look up the documentation of `scipy.ndimage.convolve`. Apply the same convolution, but using a different `mode=` keyword argument to avoid the edge effects we see here.
+### Exercise 1:
+
+Look up the documentation of `scipy.ndimage.convolve`. Apply the same convolution, but using a different `mode=` keyword argument to avoid the edge effects we see here.
 
 ```{code-cell} ipython3
-
+# Solution here
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### A difference filter
+### A difference filter
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -251,7 +250,9 @@ ax.plot(step_signal)
 ax.margins(y=0.1) 
 ```
 
-**Exercise:** Can you predict what a convolution with the kernel `[-1, 0, 1]` does? Try thinking about it before running the cells below.
+### Exercise 2:
+
+Can you predict what a convolution with the kernel `[-1, 0, 1]` does? Try thinking about it before running the cells below.
 
 ```{code-cell} ipython3
 ---
@@ -289,14 +290,17 @@ Whenever neighboring values are close, the filter response is close to 0. Right 
 
 +++
 
-#### Commutativity and assortativity of filters
+## Commutativity and assortativity of filters
 
 +++
 
 What if we try the same trick with our noisy signal?
 
 ```{code-cell} ipython3
-noisy_change = np.correlate(noisy_signal, np.array([-1, 0, 1]))
+from scipy import ndimage as ndi
+
+
+noisy_change = ndi.correlate(noisy_signal, np.array([-1, 0, 1]))
 fig, ax = plt.subplots()
 ax.plot(noisy_signal, label='signal')
 ax.plot(noisy_change, linestyle='dashed', label='change')
@@ -304,46 +308,77 @@ ax.legend(loc='upper left')
 ax.margins(0.1)
 ```
 
-Oops! We lost our edge!
+When there is high noise, it becomes much harder to find the spot where the signal changes.
 
-But recall that we smoothed the signal a bit by taking its neighbors. Perhaps we can do the same thing here. Actually, it turns out that we can do it *in any order*, so we can create a filter that combines both the difference and the mean:
-
-```{code-cell} ipython3
-mean_diff = np.correlate([-1, 0, 1], [1/3, 1/3, 1/3], mode='full')
-print(mean_diff)
-```
-
-*Note:* we use `np.convolve` here, because it has the option to output a *wider* result than either of the two inputs.
-
-+++
-
-Now we can use this to find our edge even in a noisy signal:
+But recall that we smoothed the signal a bit by taking its neighbors. We can apply the two filters in sequence to combine their properties:
 
 ```{code-cell} ipython3
-smooth_change = np.correlate(noisy_signal, mean_diff,
-                             mode='same')
+smooth_change = ndi.correlate(smooth_signal3, np.array([-1, 0, 1]))
 fig, ax = plt.subplots()
 ax.plot(noisy_signal, label='signal')
-ax.plot(smooth_change, linestyle='dashed', label='change')
+ax.plot(noisy_change, linestyle='dashed', label='change', color='gray')
+ax.plot(smooth_change, label='smooth change')
+ax.legend(loc='upper left')
 ax.margins(0.1)
 ax.hlines([-0.5, 0.5], 0, 100, linewidth=0.5, color='gray');
 ```
 
-**Exercise:** The Gaussian filter with variance $\sigma^2$ is given by:
+Actually, it turns out that we can do it *in any order* (convolution is *associative*), so we can create a filter that combines both the difference and the mean.
+
+*Note:* we use `np.convolve` here, because it has the option to output a *wider* result than either of the two inputs.
+
+```{code-cell} ipython3
+mean_diff = np.correlate([-1, 0, 1], [1/3, 1/3, 1/3], mode='full')
+fig, ax = plt.subplots()
+ax.plot(mean_diff)
+ax.scatter(np.arange(5), mean_diff);
+```
+
+We can verify that this gives the same result 
+
+```{code-cell} ipython3
+smooth_change2 = ndi.correlate(noisy_signal, mean_diff)
+fig, ax = plt.subplots()
+ax.plot(noisy_signal, label='signal')
+ax.plot(smooth_change, linestyle='dashed', label='smoothed change')
+ax.plot(smooth_change2, label='smoothed change 2')
+ax.margins(0.1)
+ax.legend(loc='upper left')
+ax.hlines([-0.5, 0.5], 0, 100, linewidth=0.5, color='gray');
+```
+
+### The Gaussian filter
+
++++
+
+The Gaussian kernel with variance $\sigma^2$ is given by:
 
 $$
 k_i = \frac{1}{\sqrt{2\pi}\sigma}\exp{\left(-\frac{(x_i - x_0)^2}{2\sigma^2}\right)}
 $$
 
-1. Create this filter (for example, with width 9, center 4, sigma 1). (Plot it)
-2. Convolve it with the difference filter (with appropriate mode). (Plot the result)
-3. Convolve it with the noisy signal. (Plot the result)
+It is an essential smoothing kernel, and has better smoothing properties than the mean kernel, as we'll see in the 2D section below. We create it from scratch here, *and* combine it with a difference kernel, to get an even nicer estimate of our change point:
 
 ```{code-cell} ipython3
-xi = np.arange(9)
-x0 = 9 // 2  # 4
+xi = np.arange(19)
+x0 = 19 // 2  # 4
 x = xi - x0
-...  # complete this code
+sigma = 2
+kernel = (
+    (1 / np.sqrt(np.pi * 2 * sigma**2))
+    * np.exp(-x**2 / (2 * sigma**2))
+)
+
+diff_kernel = np.convolve(kernel, [-1, 0, 1])
+fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(12, 4))
+
+ax0.plot(kernel)
+ax0.set_title('gaussian kernel')
+ax1.plot(diff_kernel)
+ax1.set_title('gaussian difference kernel')
+ax2.plot(noisy_signal)
+ax2.plot(ndi.correlate(noisy_signal, diff_kernel))
+ax2.set_title('signal convolved with\ngaussian difference');
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -452,9 +487,11 @@ This filter is a simple smoothing filter and produces two important results:
 
 +++
 
-Let's see a convolution in action.
+Incidentally, the above filtering is the exact same principle behind the *convolutional neural networks*, or CNNs, that you might have heard much about over the past few years. The only difference is that while above, the simple mean kernel is used, in CNNs, the values inside the kernel are *learned* to find a specific feature, or accomplish a specific task. Time permitting, we'll demonstrate this in an exercise at the end of the notebook.
 
-(Execute the following cell, but don't try to read it; its purpose is to generate an example.)
++++
+
+Here's a small demo of convolution in action.
 
 ```{code-cell} ipython3
 #--------------------------------------------------------------------------
@@ -483,12 +520,12 @@ def mean_filter_demo(image, vmax=1):
 
         (i, j), images = image_cache[i_step]
         fig, axes = plt.subplots(1, len(images), figsize=(10, 5))
-        
+
         for ax, imc in zip(axes, images):
             ax.imshow(imc, vmax=vmax)
             rect = patches.Rectangle([j - 0.5, i - 0.5], 1, 1, color='yellow', fill=False)
             ax.add_patch(rect)
-            
+
         plt.show()
     return mean_filter_step
 
@@ -532,30 +569,8 @@ def bounded_slice(center, xy_max, size=1, i_min=0):
 ```
 
 ```{code-cell} ipython3
-mean_filter_interactive_demo(bright_square)
+mean_filter_interactive_demo(bright_square);
 ```
-
-Incidentally, the above filtering is the exact same principle behind the *convolutional neural networks*, or CNNs, that you might have heard much about over the past few years. The only difference is that while above, the simple mean kernel is used, in CNNs, the values inside the kernel are *learned* to find a specific feature, or accomplish a specific task. Time permitting, we'll demonstrate this in an exercise at the end of the notebook.
-
-+++ {"slideshow": {"slide_type": "notes"}}
-
-Slight aside:
-
-```{code-cell} ipython3
----
-slideshow:
-  slide_type: notes
----
-print(np.sum(mean_kernel))
-```
-
-+++ {"slideshow": {"slide_type": "notes"}}
-
-Note that all the values of the kernel sum to 1. Why might that be important?
-
-+++ {"slideshow": {"slide_type": "slide"}}
-
-### Downsampled image
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -715,7 +730,9 @@ kernel = filters.gaussian(spot, sigma=sigma)
 imshow_all(spot, kernel / np.max(kernel))
 ```
 
-**Exercise** (Chapter 0 reminder!) Plot the profile of the gaussian kernel at its midpoint, i.e. the values under the line shown here:
+### Exercise 3:
+
+Plot the profile of the gaussian kernel at its midpoint, i.e. the values under the line shown here:
 
 ```{code-cell} ipython3
 fig, ax = plt.subplots()
@@ -726,12 +743,12 @@ ax.set_ylim((sidelen - 1, 0))
 ```
 
 ```{code-cell} ipython3
-...  # add your plotting code here
+# Solution here
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-### Basic edge filtering
+## Basic edge filtering
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -739,7 +756,7 @@ For images, edges are boundaries between light and dark values. The detection of
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### Difference filters in 2D
+### Difference filters in 2D
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -762,9 +779,13 @@ fig, ax = plt.subplots()
 ax.imshow(gradient_vertical);
 ```
 
+```{code-cell} ipython3
+vertical_kernel.shape
+```
+
 +++ {"slideshow": {"slide_type": "fragment"}}
 
-## <span style="color:cornflowerblue">Exercise:</span>
+### Exercise 4:
 
 +++
 
@@ -772,7 +793,11 @@ ax.imshow(gradient_vertical);
 - Compute the magnitude of the image gradient at each point: $\left|g\right| = \sqrt{g_x^2 + g_y^2}$
 
 ```{code-cell} ipython3
-...  # add your horizontal and gradient magnitude code here
+# Solution here
+```
+
+```{code-cell} ipython3
+# Solution here
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -823,6 +848,7 @@ slideshow:
 gradient = filters.sobel(smooth)
 titles = ['gradient before smoothing', 'gradient after smoothing']
 # Scale smoothed gradient up so they're of comparable brightness.
+
 imshow_all(pixelated_gradient, gradient*1.8, titles=titles)
 ```
 
@@ -832,7 +858,9 @@ Notice how the edges look more continuous in the smoothed image.
 
 +++
 
-**Exercise: the simplest neural network.** Let's pretend we have an image and a "ground truth" image of what we want to detect:
+## Exercise 5: the simplest neural network
+
+Let's pretend we have an image and a "ground truth" image of what we want to detect:
 
 ```{code-cell} ipython3
 target = (filters.sobel_h(image) > 0.07)
@@ -845,28 +873,24 @@ Can we use machine learning to find a 3x3 convolutional filter that recovers thi
 - use `np.reshape` again to see it as `npixels` "linear" patches of 9 pixels.
 - Now you have an `(npixels, 9)` "feature" matrix, `X`.
 - Use slicing and `np.ravel` to get an `npixels`-length array of target values.
-- Use `sklearn.linear_model.LogisticRegression` to learn the relationship between our pixel neighborhoods (of size 9) and the target.
+- Use `sklearn.linear_model.LogisticRegression(solver='liblinear')` to learn the relationship between our pixel neighborhoods (of size 9) and the target.
 - Look at your `model.coef_`. How do they compare to the Sobel coefficients?
 
 ```{code-cell} ipython3
-
+# Solution here
 ```
 
 ---
 
-+++ {"slideshow": {"slide_type": "slide"}}
++++ {"slideshow": {"slide_type": "fragment"}}
 
-## Denoising filters
+## Nonlinear filters
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
 At this point, we make a distinction. The earlier filters were implemented as a *linear dot-product* of values in the filter kernel and values in the image. The following kernels implement an *arbitrary* function of the local image neighborhood. Denoising filters in particular are filters that preserve the sharpness of edges in the image.
 
 As you can see from our earlier examples, mean and Gaussian filters smooth an image rather uniformly, including the edges of objects in an image. When denoising, however, you typically want to preserve features and just remove noise. The distinction between noise and features can, of course, be highly situation-dependent and subjective.
-
-+++ {"slideshow": {"slide_type": "fragment"}}
-
-### Median Filter
 
 +++ {"slideshow": {"slide_type": "notes"}}
 
@@ -905,33 +929,8 @@ imshow_all(coins, mean_coin, median_coin, titles=titles)
 
 Notice how the edges of coins are preserved after using the median filter.
 
-+++ {"slideshow": {"slide_type": "slide"}}
++++
 
 ## Further reading
 
-+++ {"slideshow": {"slide_type": "notes"}}
-
-`scikit-image` also provides more sophisticated denoising filters:
-
-```{code-cell} ipython3
----
-slideshow:
-  slide_type: fragment
----
-from skimage.restoration import denoise_tv_bregman
-denoised = denoise_tv_bregman(image, 4)
-d = disk(4)
-median = filters.rank.median(image, d)
-titles = ['image', 'median', 'denoised']
-imshow_all(image, median, denoised, titles=titles)
-```
-
-+++ {"slideshow": {"slide_type": "fragment"}}
-
-* [Denoising examples](http://scikit-image.org/docs/dev/auto_examples/plot_denoise.html)
-* [Rank filters example](http://scikit-image.org/docs/dev/auto_examples/applications/plot_rank_filters.html)
-* [Restoration API](http://scikit-image.org/docs/stable/api/skimage.restoration.html)
-
-Take a look at this [neat feature](https://github.com/scikit-image/scikit-image/pull/2647) merged last year:
-
-![cycle spinning](../images/cycle_spin.png)
+See the scikit-image [filters API documentation](https://scikit-image.org/docs/dev/api/skimage.filters.html) for further reading. The scikit-image [restoration module](https://scikit-image.org/docs/dev/api/skimage.restoration.html) also includes sophisticated modules for image denoising and deconvolution.
