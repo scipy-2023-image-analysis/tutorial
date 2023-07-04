@@ -2,15 +2,9 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: 00_home
-parts:
-  - caption: Getting started
-    chapters:
-      - file: 01_getting_started/00_download_tutorial
-      - file: 01_getting_started/01_install_dependencies
-      - file: 01_getting_started/02_launch_notebooks
-  - caption: Tutorial notebooks
-    chapters:
-    - file: 02_notebooks/00_images_are_arrays
-    - file: 02_notebooks/01_image_filtering
-    - file: 02_notebooks/02_segmentation_and_measuring
+root: index
+chapters:
+  - file: install_dependencies
+  - file: 00_images_are_arrays
+  - file: 01_image_filtering
+  - file: 02_segmentation_and_measuring
