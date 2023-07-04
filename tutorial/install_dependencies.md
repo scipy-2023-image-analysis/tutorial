@@ -160,3 +160,11 @@ Some of the libraries take a while to run the first time, so be patient. You
 should see (1) a matplotlib window with three image panels pop up; when you
 close this, (2) a napari window showing the same coins image should show up.
 When you close this, the script should finish without errors.
+
+## Running the notebooks
+
+This tutorial uses Markdown files (with extension ".md") to store jupyter
+notebooks managed by jupytext. Once you have jupytext installed (as per the
+instructions above), the experience is pretty much the same as using a regular
+Jupyter notebook: launch `jupyter notebook` or `jupyter lab`, open this folder,
+and click on each notebook to follow along with the class.
