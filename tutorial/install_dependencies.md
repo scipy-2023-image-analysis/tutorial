@@ -1,5 +1,5 @@
 (install-dependencies)=
-# Prep 2: Install Python and dependencies
+# Install Python and dependencies
 
 ```{tip}
 If you have any issues with installation, head over to our Zulip servers where we can help you get
