@@ -101,7 +101,8 @@ smooth_signal3 = (noisy_signal[:-2]
                   + noisy_signal[2:]) / 3
 
 fig, ax = plt.subplots()
-ax.plot(smooth_signal, label='mean of 2')
+ax.plot(noisy_signal, alpha=0.5, label="original")
+ax.plot(smooth_signal, linestyle="dashed", label='mean of 2')
 ax.plot(smooth_signal3, label='mean of 3')
 ax.legend(loc='upper left');
 ```
@@ -278,10 +279,9 @@ slideshow:
   slide_type: fragment
 ---
 fig, ax = plt.subplots()
-ax.plot(step_signal, label='signal')
+ax.plot(step_signal, alpha=0.5, label='signal')
 ax.plot(result_conv, linestyle='dashed', label='convolved')
-ax.plot(result_corr, linestyle='dashed', label='correlated',
-        color='C3')
+ax.plot(result_corr, linestyle='dashed', label='correlated')
 ax.legend(loc='upper left')
 ax.margins(y=0.1) 
 ```
@@ -320,8 +320,8 @@ But recall that we smoothed the signal a bit by taking its neighbors. We can app
 smooth_change = ndi.correlate(smooth_signal3, np.array([-1, 0, 1]))
 
 fig, ax = plt.subplots()
-ax.plot(noisy_signal, label='signal')
-ax.plot(noisy_change, linestyle='dashed', label='change', color='gray')
+ax.plot(noisy_signal, alpha=0.5, label='signal')
+ax.plot(noisy_change, linestyle='dashed', alpha=0.7, label='change')
 ax.plot(smooth_change, label='smooth change')
 ax.legend(loc='upper left')
 ax.margins(0.1)
@@ -346,7 +346,7 @@ We can verify that this gives the same result
 smooth_change2 = ndi.correlate(noisy_signal, mean_diff)
 
 fig, ax = plt.subplots()
-ax.plot(noisy_signal, label='signal')
+ax.plot(noisy_signal, alpha=0.5, label='signal')
 ax.plot(smooth_change, linestyle='dashed', label='smoothed change')
 ax.plot(smooth_change2, label='smoothed change 2')
 ax.margins(0.1)
