@@ -12,6 +12,7 @@ dependencies:
   - jupyter-book=0.15.1
   - pooch==1.7.0
   - scikit-learn==1.2.2
+  - ipywidgets==8.0.7
 
   # napari 0.4.18 dependencies
   - app-model>=0.1.0,<0.3.0
