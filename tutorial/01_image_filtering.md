@@ -87,6 +87,7 @@ slideshow:
 ---
 # Take the mean of neighboring pixels
 smooth_signal = (noisy_signal[:-1] + noisy_signal[1:]) / 2.0
+
 fig, ax = plt.subplots()
 ax.plot(smooth_signal);
 ```
@@ -94,8 +95,10 @@ ax.plot(smooth_signal);
 What happens if we want to take the *three* neighboring pixels? We can do the same thing:
 
 ```{code-cell} ipython3
-smooth_signal3 = (noisy_signal[:-2] + noisy_signal[1:-1]
+smooth_signal3 = (noisy_signal[:-2]
+                  + noisy_signal[1:-1]
                   + noisy_signal[2:]) / 3
+
 fig, ax = plt.subplots()
 ax.plot(smooth_signal, label='mean of 2')
 ax.plot(smooth_signal3, label='mean of 3')
@@ -299,8 +302,8 @@ What if we try the same trick with our noisy signal?
 ```{code-cell} ipython3
 from scipy import ndimage as ndi
 
-
 noisy_change = ndi.correlate(noisy_signal, np.array([-1, 0, 1]))
+
 fig, ax = plt.subplots()
 ax.plot(noisy_signal, label='signal')
 ax.plot(noisy_change, linestyle='dashed', label='change')
@@ -314,6 +317,7 @@ But recall that we smoothed the signal a bit by taking its neighbors. We can app
 
 ```{code-cell} ipython3
 smooth_change = ndi.correlate(smooth_signal3, np.array([-1, 0, 1]))
+
 fig, ax = plt.subplots()
 ax.plot(noisy_signal, label='signal')
 ax.plot(noisy_change, linestyle='dashed', label='change', color='gray')
@@ -329,15 +333,17 @@ Actually, it turns out that we can do it *in any order* (convolution is *associa
 
 ```{code-cell} ipython3
 mean_diff = np.correlate([-1, 0, 1], [1/3, 1/3, 1/3], mode='full')
+
 fig, ax = plt.subplots()
 ax.plot(mean_diff)
 ax.scatter(np.arange(5), mean_diff);
 ```
 
-We can verify that this gives the same result 
+We can verify that this gives the same result
 
 ```{code-cell} ipython3
 smooth_change2 = ndi.correlate(noisy_signal, mean_diff)
+
 fig, ax = plt.subplots()
 ax.plot(noisy_signal, label='signal')
 ax.plot(smooth_change, linestyle='dashed', label='smoothed change')
