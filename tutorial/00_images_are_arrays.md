@@ -31,7 +31,8 @@ Let's see how to build a grayscale image as a 2D array:
 import numpy as np
 from matplotlib import pyplot as plt
 
-random_image = np.random.random([500, 500])
+rng = np.random.default_rng(44)
+random_image = rng.random([500, 500])
 
 plt.imshow(random_image, cmap='gray')
 plt.colorbar();

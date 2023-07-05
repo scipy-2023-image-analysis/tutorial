@@ -52,6 +52,7 @@ slideshow:
 ---
 step_signal = np.zeros(100)
 step_signal[50:] = 1
+
 fig, ax = plt.subplots()
 ax.plot(step_signal)
 ax.margins(y=0.1)
@@ -67,11 +68,11 @@ slideshow:
   slide_type: fragment
 ---
 # Just to make sure we all see the same results
-np.random.seed(0)
+rng = np.random.default_rng(44)
+noise = rng.normal(0, 0.35, step_signal.shape)
 
+noisy_signal = step_signal + noise
 
-noisy_signal = (step_signal
-                + np.random.normal(0, 0.35, step_signal.shape))
 fig, ax = plt.subplots()
 ax.plot(noisy_signal);
 ```
