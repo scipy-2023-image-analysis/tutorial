@@ -429,7 +429,7 @@ slideshow:
   slide_type: fragment
 ---
 fig, ax = plt.subplots()
-ax.imshow(bright_square);
+ax.imshow(bright_square, cmap="gray");
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -529,7 +529,7 @@ def mean_filter_demo(image, vmax=1):
         fig, axes = plt.subplots(1, len(images), figsize=(10, 5))
 
         for ax, imc in zip(axes, images):
-            ax.imshow(imc, vmax=vmax)
+            ax.imshow(imc, vmax=vmax, cmap="gray")
             rect = patches.Rectangle([j - 0.5, i - 0.5], 1, 1, color='yellow', fill=False)
             ax.add_patch(rect)
 
@@ -593,8 +593,8 @@ from skimage import data
 image = data.camera()
 pixelated = image[::10, ::10]
 fig, (ax0, ax1) = plt.subplots(1, 2, figsize=(10, 5))
-ax0.imshow(image)
-ax1.imshow(pixelated) ;
+ax0.imshow(image, cmap="gray")
+ax1.imshow(pixelated, cmap="gray") ;
 ```
 
 +++ {"slideshow": {"slide_type": "notes"}}
@@ -621,7 +621,7 @@ def imshow_all(*images, titles=None):
     fig, axes = plt.subplots(nrows=1, ncols=ncols,
                              figsize=(width, height))
     for ax, img, label in zip(axes.ravel(), images, titles):
-        ax.imshow(img, vmin=vmin, vmax=vmax)
+        ax.imshow(img, vmin=vmin, vmax=vmax, cmap="gray")
         ax.set_title(label)
 ```
 
@@ -744,7 +744,7 @@ Plot the profile of the gaussian kernel at its midpoint, i.e. the values under t
 ```{code-cell} ipython3
 fig, ax = plt.subplots()
 
-ax.imshow(kernel, cmap='inferno')
+ax.imshow(kernel, cmap='gray')
 ax.vlines(22, -100, 100, color='C9')
 ax.set_ylim((sidelen - 1, 0))
 ```
@@ -783,7 +783,7 @@ vertical_kernel = np.array([
 gradient_vertical = ndi.correlate(pixelated.astype(float),
                                   vertical_kernel)
 fig, ax = plt.subplots()
-ax.imshow(gradient_vertical);
+ax.imshow(gradient_vertical, cmap="gray");
 ```
 
 ```{code-cell} ipython3
