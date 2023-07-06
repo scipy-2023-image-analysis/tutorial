@@ -209,7 +209,7 @@ ic.files
 ```{code-cell} ipython3
 import os
 
-f, axes = plt.subplots(nrows=3, ncols=len(ic) // 3 + 1, figsize=(20, 5))
+f, axes = plt.subplots(nrows=3, ncols=len(ic) // 3 + 1)
 
 # subplots returns the figure and an array of axes
 # we use `axes.ravel()` to turn these into a list
