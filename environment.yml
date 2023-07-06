@@ -12,7 +12,8 @@ dependencies:
   - jupyter-book=0.15.1
   - pooch=1.7.0
   - scikit-learn=1.2.2
-  - ipywidgets==8.0.7
+  - ipywidgets=8.0.7
+  - seaborn=0.12.2
   - napari=0.4.18
   - pip:
     - scikit-image==0.21.0  # remove when skimage 0.21 is on conda-forge
