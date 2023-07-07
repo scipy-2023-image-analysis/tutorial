@@ -422,7 +422,7 @@ After watershed, we have better disambiguation between internal cells!
 
 +++
 
-Once we have defined our objects, we can make measurements on them using `skimage.measure.regionprops` and the new `skimage.measure.regionprops_table`. These measurements include features such as area or volume, bounding boxes, and intensity statistics.
+Once we have defined our objects, we can make measurements on them using `skimage.measure.regionprops` and `skimage.measure.regionprops_table`. These measurements include features such as area or volume, bounding boxes, and intensity statistics.
 
 Before measuring objects, it helps to clear objects from the image border. Measurements should only be collected for objects entirely contained in the image.
 
