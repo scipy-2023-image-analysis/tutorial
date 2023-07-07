@@ -568,7 +568,7 @@ def napari_experimental_provide_dock_widget():
     return [f, f2]
 ```
 
-Now we register the plugin. **Note: because of a bug, you will need to Kernel -> Restart Kernel if you have created a viewer and closed it in this session.**
+Now we register the plugin. **Note: because of a bug, you may need to Kernel -> Restart Kernel if you have created a viewer and closed it in this session.**
 
 ```{code-cell} ipython3
 from napari.plugins import plugin_manager
