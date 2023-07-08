@@ -2,7 +2,7 @@ name: image-analysis-23
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python=3.10
   - pip
   - jupyterlab
   - jupytext
