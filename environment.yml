@@ -15,5 +15,6 @@ dependencies:
   - ipywidgets=8.0.7
   - seaborn=0.12.2
   - napari=0.4.18
+  - cookiecutter
   - pip:
     - napari-animation
