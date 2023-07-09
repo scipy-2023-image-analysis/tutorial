@@ -8,3 +8,4 @@ chapters:
   - file: 00_images_are_arrays
   - file: 01_image_filtering
   - file: 02_segmentation_and_measuring
+  - file: 03_adv0_make_a_plugin
