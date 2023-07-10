@@ -9,3 +9,4 @@ chapters:
   - file: 01_image_filtering
   - file: 02_segmentation_and_measuring
   - file: 03_adv0_make_a_plugin
+  - file: 04_deep_learning_segmentation
