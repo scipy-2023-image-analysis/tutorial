@@ -16,5 +16,6 @@ dependencies:
   - seaborn=0.12.2
   - napari=0.4.18
   - cookiecutter
+  - cellpose
   - pip:
     - napari-animation
