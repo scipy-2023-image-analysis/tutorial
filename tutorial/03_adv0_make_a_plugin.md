@@ -6,7 +6,7 @@ In addition to being a viewer accessible from Python, napari supports *plugins*
 to add functionality to the viewer and to bundle custom functions into a nice
 user interface.
 
-In this tutorial, we will make a napari analysis plugin for a the watershed
+In this tutorial, we will make a napari analysis plugin for the watershed
 segmentation we implemented in the previous section.
 
 The steps in making a napari plugin are as follows:
