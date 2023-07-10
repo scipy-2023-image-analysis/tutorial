@@ -211,6 +211,8 @@ Now, you need to:
   `napari.types.LabelsData`. The output annotation should be
   `napari.types.LayerDataTuple` — see the [documentation for
   this](https://napari.org/plugins/guides.html#the-layerdata-tuple).
+  To write this function you can reuse code from the corresponding steps in the
+  segmentation chapter.
 - make sure that you put in all the required imports at the top of the file.
 - install your plugin into your environment, with `python -m pip install -e .`
   at the root of your repository.
