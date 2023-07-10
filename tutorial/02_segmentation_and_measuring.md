@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.6
+    jupytext_version: 1.14.7
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -36,7 +36,7 @@ Segmentation is a fundamental operation in scientific image analysis because we 
 
 Computationally, segmentations are most often represented as images, of the same size as the original image, containing integer *labels*, with one value representing one object.
 
-Here is a very simple image and segmentation, taken from [this scikit-image tutorial](https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html#sphx-glr-auto-examples-segmentation-plot-watershed-py):
+Here is a very simple image and segmentation, taken from [this scikit-image gallery example](https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html#sphx-glr-auto-examples-segmentation-plot-watershed-py):
 
 ```{code-cell} ipython3
 import numpy as np
@@ -46,6 +46,8 @@ import napari
 
 from skimage.segmentation import watershed
 from skimage.feature import peak_local_max
+from skimage.util import label_points
+from skimage.color import label2rgb
 
 
 # Generate an initial image with two overlapping circles
@@ -60,11 +62,35 @@ image = np.logical_or(mask_circle1, mask_circle2)
 # Generate the markers as local maxima of the distance to the background
 distance = ndi.distance_transform_edt(image)
 coords = peak_local_max(distance, footprint=np.ones((3, 3)), labels=image)
-mask = np.zeros(distance.shape, dtype=bool)
-mask[tuple(coords.T)] = True
-markers, _ = ndi.label(mask)
+markers = label_points(coords, distance.shape)
 labels = watershed(-distance, markers, mask=image)
 
+# finally, plot the result
+fig, ax = plt.subplots(1, 3)
+ax[0].imshow(image)
+ax[0].set_title('image')
+ax[1].imshow(label2rgb(labels))
+ax[1].set_title('labels')
+ax[2].imshow(labels)
+ax[2].set_title('labels interpreted\nas image');
+```
+
+Notice that "labels" is just a NumPy array with integer values. We have to be careful to interpret it as labels and not as an image.
+
++++
+
+## The napari viewer
+
++++
+
+To look at images and associated data, *napari* provides additional functionality over matplotlib, including:
+- the canvas is OpenGL, interactive, and responsive
+- the canvas has *layers*, which can be individually shown or hidden
+- (the *killer app*) the viewer is *n-dimensional*, which comes in handy when your images are more than 2D, such as MRI data or (as below) microscopy data
+
+Here's how to look at the same images with napari:
+
+```{code-cell} ipython3
 viewer = napari.Viewer()
 image_layer = viewer.add_image(image)
 labels_layer = viewer.add_labels(labels)
@@ -73,7 +99,14 @@ labels_as_image_layer = viewer.add_image(
 )
 ```
 
-Notice that "labels" is just a NumPy array with integer values. We have to be careful to interpret it as labels and not as an image.
+### Exercise 0: play with the napari viewer
+
+- zoom with scroll, pan with click and drag
+- Try clicking on the 👁️ icon on each layer in the layer list to make them invisible or visible again
+- Try alt-clicking on the icon: this makes every other layer invisible
+- Try changing the opacity, colormap, or interpolation on a layer
+- try turning on "grid mode", from the group of buttons at the bottom-left of the viewer.
+- *select* the labels layer, click on the paintbrush tool, and tweak the segmentation where the two labels meet.
 
 +++
 
@@ -81,7 +114,7 @@ Notice that "labels" is just a NumPy array with integer values. We have to be ca
 
 +++
 
-In the rest of this notebook, we will segment nuclei from a small sample image provided by the Allen Institute for Cell Science.
+In the rest of this notebook, we will segment cell nuclei from a small sample image provided by the Allen Institute for Cell Science.
 
 ```{code-cell} ipython3
 from skimage import data
@@ -110,7 +143,7 @@ spacing = np.array([0.29, 0.26, 0.26])
 We can view the 3D image using napari.
 
 ```{code-cell} ipython3
-viewer = napari.view_image(
+viewer, (membrane_layer, nuclei_layer) = napari.imshow(
     cells3d,
     channel_axis=1,  # remember, Python uses 0-based indexing!
     scale=spacing,
@@ -131,7 +164,7 @@ nbscreenshot(viewer, canvas_only=True)
 
 ## Edge detection
 
-We saw the [Sobel operator](https://en.wikipedia.org/wiki/Sobel_operator) in the filters lesson. It is an edge detection algorithm that approximates the gradient of the image intensity, and is fast to compute. The [Scharr filter](https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.scharr) is a slightly more sophisticated version, with smoothing weights [3, 10, 3]. Both work for n-dimensional images in scikit-image.
+We saw the [Sobel operator](https://en.wikipedia.org/wiki/Sobel_operator) in the filters lesson. It is an edge detection algorithm that approximates the gradient of the image intensity, and is fast to compute. The [Scharr filter](https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.scharr) is a slightly more sophisticated version, with smoothing weights [3, 10, 3]. Finally, the Farid & Simoncelli filter has [even more sophisticated weights](https://en.wikipedia.org/wiki/Image_derivative#Farid_and_Simoncelli_Derivatives). All three work for n-dimensional images in scikit-image.
 
 ```{code-cell} ipython3
 # grab individual channels and convert to float in [0, 1]
@@ -144,13 +177,9 @@ nuclei = cells3d[:, 1, :, :] / np.max(cells3d)
 from skimage import filters
 
 
-edges = filters.scharr(nuclei)
+edges = filters.farid(nuclei)
 
-nuclei_layer = viewer.layers['nuclei']
-nuclei_layer.blending = 'additive'
-nuclei_layer.colormap = 'green'
-
-viewer.add_image(
+edges_layer = viewer.add_image(
     edges,
     scale=spacing,
     blending='additive',
@@ -179,7 +208,7 @@ li_thresholded = denoised > filters.threshold_li(denoised)
 ```
 
 ```{code-cell} ipython3
-viewer.add_image(
+threshold_layer = viewer.add_image(
     li_thresholded,
     scale=spacing,
     opacity=0.3,
@@ -191,6 +220,10 @@ viewer.add_image(
 
 nbscreenshot(viewer)
 ```
+
+We can see that the thresholded value is full of small holes, because of variation in pixel intensity inside the nuclei. Before proceeding further, we'd like to clean up those holes. Additionally, because of variations in the *background* intensity, some spurious small clumps of background pixels appear as foreground.
+
++++
 
 ## Morphological operations
 
@@ -273,12 +306,18 @@ We can see that tightly packed cells connected in the binary image are assigned 
 
 A better segmentation would assign different labels to different nuclei. 
 
-Typically we use [watershed segmentation](https://en.wikipedia.org/wiki/Watershed_%28image_processing%29) for this purpose. We place *markers* at the centre of each object, and these labels are expanded until they meet an edge or an adjacent marker.
+Typically we use [watershed segmentation](https://en.wikipedia.org/wiki/Watershed_%28image_processing%29) for this purpose. We place *markers* at the center of each object, and these labels are expanded until they meet an edge or an adjacent marker.
 
-The trick, then, is how to find these markers. It can be quite challenging to find markers with the right location. A slight amount of noise in the image can result in very wrong point locations. Here is a common approach: find the distance from the object boundaries, then place points at the maximal distance.
+The trick, then, is how to find these markers.
+
+A common approach, which we saw above with the two overlapping circles, is to compute the distance transform of a binary mask, and place markers at the local maxima of that transform.
+
+As you will see below, it can be quite challenging to find markers with the right location. A slight amount of noise in the image can result in very wrong point locations.
 
 ```{code-cell} ipython3
-transformed = ndi.distance_transform_edt(remove_objects, sampling=spacing)
+transformed = ndi.distance_transform_edt(
+    remove_objects, sampling=spacing
+)
 
 maxima = morphology.local_maxima(transformed)
 viewer.add_points(
@@ -356,42 +395,42 @@ nbscreenshot(viewer)
 # unscaled points.data
 # this cell is only to simulate interactive annotation,
 # no need to run it if you already have annotations.
+# If for some reason you don't, you can uncomment the code below
 
 
-points.data = np.array(
-      [[ 30.        ,  14.2598685 ,  27.7741219 ],
-       [ 30.        ,  30.10416663,  81.36513029],
-       [ 30.        ,  13.32785096, 144.27631406],
-       [ 30.        ,  46.8804823 , 191.80920846],
-       [ 30.        ,  43.15241215, 211.84758551],
-       [ 30.        ,  94.87938547, 160.12061219],
-       [ 30.        ,  72.97697335, 112.58771779],
-       [ 30.        , 138.21820096, 189.01315585],
-       [ 30.        , 144.74232372, 242.60416424],
-       [ 30.        ,  98.14144685, 251.92433962],
-       [ 30.        , 153.59649032, 112.58771779],
-       [ 30.        , 134.49013081,  40.35635865],
-       [ 30.        , 182.95504275,  48.74451649],
-       [ 30.        , 216.04166532,  80.89912152],
-       [ 30.        , 235.14802483, 130.296051  ],
-       [ 30.        , 196.00328827, 169.44078757],
-       [ 30.        , 245.86622651, 202.06140137],
-       [ 30.        , 213.71162148, 250.52631331],
-       [ 28.        ,  87.42324517,  52.00657787]],
-      dtype=float,
-)
+# points.data = np.array(
+#       [[ 30.        ,  14.2598685 ,  27.7741219 ],
+#        [ 30.        ,  30.10416663,  81.36513029],
+#        [ 30.        ,  13.32785096, 144.27631406],
+#        [ 30.        ,  46.8804823 , 191.80920846],
+#        [ 30.        ,  43.15241215, 211.84758551],
+#        [ 30.        ,  94.87938547, 160.12061219],
+#        [ 30.        ,  72.97697335, 112.58771779],
+#        [ 30.        , 138.21820096, 189.01315585],
+#        [ 30.        , 144.74232372, 242.60416424],
+#        [ 30.        ,  98.14144685, 251.92433962],
+#        [ 30.        , 153.59649032, 112.58771779],
+#        [ 30.        , 134.49013081,  40.35635865],
+#        [ 30.        , 182.95504275,  48.74451649],
+#        [ 30.        , 216.04166532,  80.89912152],
+#        [ 30.        , 235.14802483, 130.296051  ],
+#        [ 30.        , 196.00328827, 169.44078757],
+#        [ 30.        , 245.86622651, 202.06140137],
+#        [ 30.        , 213.71162148, 250.52631331],
+#        [ 28.        ,  87.42324517,  52.00657787]],
+#       dtype=float,
+# )
 ```
 
 Once you have marked all the points, you can grab the data back, and make a markers image for `skimage.segmentation.watershed`:
 
 ```{code-cell} ipython3
-from skimage import segmentation
+from skimage import segmentation, util
 
 marker_locations = points.data
 
-markers = np.zeros(nuclei.shape, dtype=np.uint32)
-marker_indices = tuple(np.round(marker_locations).astype(int).T)
-markers[marker_indices] = np.arange(len(marker_locations)) + 1
+
+markers = util.label_points(marker_locations, nuclei.shape)
 markers_big = morphology.dilation(markers, morphology.ball(5))
 
 segmented = segmentation.watershed(
@@ -400,9 +439,10 @@ segmented = segmentation.watershed(
     mask=remove_objects,
 )
 
-viewer.add_labels(
+final_segmentation = viewer.add_labels(
     segmented,
     scale=spacing,
+    blending='translucent_no_depth',  # don't hide enclosed points
 )
 
 viewer.layers['labels'].visible = False
@@ -458,10 +498,10 @@ for prop in regionprops[0]:
     except NotImplementedError:
         unsupported.append(prop)
 
-print("Supported properties:")
+print("3D/nD properties:")
 print("  " + "\n  ".join(supported))
 print()
-print("Unsupported properties:")
+print("2D-only properties:")
 print("  " + "\n  ".join(unsupported))
 ```
 
@@ -518,81 +558,4 @@ Now that you have segmented cells, (or even with just the nuclei), use [`skimage
 
 ```{code-cell} ipython3
 # Solution here
-```
-
-### Exercise 4: cellpose (2D)
-
-Cellpose is a deep-learning based segmentation tool. It does an amazing job at segmenting 2D images of cells. 3D support is a work in progress, so we will only try out 2D.
-
-As input, cellpose requires a 2D image with channels as the final axis.
-
-- Read the Cellpose documentation example notebook [here](https://cellpose.readthedocs.io/en/latest/notebook.html).
-- Index the middle plane of your cells3d image.
-- Use [`np.transpose`](https://numpy.org/doc/stable/reference/generated/numpy.transpose.html) to move the channel axis to the final position in the array.
-- Call cellpose with the appropriate channel settings (carefully read the example in the Cellpose documentation).
-- Display the two image channels and the segmentation masks overlaid in napari.
-
-```{code-cell} ipython3
-# solution here
-```
-
-## A napari plugin
-
-+++
-
-Napari UI plugins are namespaces (e.g. modules) containing functions that implement one of several napari *hook specifications* — that is, function signatures matching a certain pattern. For more details, see the napari plugins documentation:
-
-https://napari.org/plugins/stable/index.html
-
-Today, we will implement a plugin to separate labels based on points, as we did above.
-
-Here's a simple little plugin:
-
-```{code-cell} ipython3
-import napari
-from magicgui import magic_factory
-from napari_plugin_engine import napari_hook_implementation
-
-
-@magic_factory(result_widget=True)
-def f(x: int, y: int) -> int:
-    return x + y
-
-
-@magic_factory(result_widget=True)
-def f2(x: int, y: int) -> int:
-    return x - y
-
-@napari_hook_implementation
-def napari_experimental_provide_dock_widget():
-    return [f, f2]
-```
-
-Now we register the plugin. **Note: because of a bug, you may need to Kernel -> Restart Kernel if you have created a viewer and closed it in this session.**
-
-```{code-cell} ipython3
-from napari.plugins import plugin_manager
-
-plugin_manager.unregister('little-calculator')
-plugin_manager.register(
-    {'napari_experimental_provide_dock_widget': napari_experimental_provide_dock_widget},
-    'little-calculator',
-)
-```
-
-### Exercise 5: Create a napari plugin
-
-Based on the function we used above to separate labels based on points using the *watershed* algorithm, create a napari plugin. The input to your plugin function should be a points layer and a labels layer, and the output should be a labels layer.
-
-```{code-cell} ipython3
-@magic_factory
-def separate_labels(
-    points_layer: napari.layers.Points,
-    labels_layer: napari.layers.Labels,
-) -> napari.layers.Labels:
-    ...  # complete the function here
-```
-
-```{code-cell} ipython3
-plugin_manager.register(...)  # register your plugin here
 ```
