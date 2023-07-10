@@ -641,7 +641,3 @@ feature_image = map_array(
 ```{code-cell} ipython3
 viewer.add_image(feature_image, scale=spacing)
 ```
-
-```{code-cell} ipython3
-
-```
