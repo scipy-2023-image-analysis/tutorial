@@ -137,14 +137,14 @@ follow the installation instructions below.
 2. Create your environment and install `napari` from `conda-forge`
 
    ```bash
-   conda create -y -n image-analysis-23 python=3.10 napari
+   conda create -y -n image-analysis-23 -c conda-forge python=3.10 napari
    ```
 
 3. Then, after creation:
 
    ```bash
    conda activate image-analysis-23
-   conda install -f environment.yml
+   conda env update -f environment.yml
    ```
 ````
 
