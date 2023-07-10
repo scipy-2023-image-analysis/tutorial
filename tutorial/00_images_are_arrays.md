@@ -69,7 +69,7 @@ cat[10:110, 10:110, :] = [255, 0, 0]  # [red, green, blue]
 plt.imshow(cat);
 ```
 
-Images can also include transparent regions by adding a 4th dimension, called an *alpha layer*.
+Images can also include transparent regions by adding a 4th channel, called an *alpha layer*.
 
 +++
 
