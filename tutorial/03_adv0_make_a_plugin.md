@@ -22,7 +22,7 @@ tutorial](https://www.youtube.com/watch?v=NL-VywidzXE),
 or [the instructions on
 napari.org](https://napari.org/stable/plugins/test_deploy.html#preparing-for-release).
 
-![plugin example](./data/plugin-01.png)
+![plugin example](./_static/plugin-01.png)
 
 ## Choosing a contribution
 

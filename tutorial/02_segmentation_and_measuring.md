@@ -28,7 +28,7 @@ Everyone has heard or seen Photoshop or a similar graphics editor take a person 
 
 In popular culture, the Terminator's vision segments humans out of the overall scene:
 
-<img src="./data/terminator-vision.png" width="700px"/>
+<img src="./_static/terminator-vision.png" width="700px"/>
 
 Segmentation is a fundamental operation in scientific image analysis because we often want to measure properties of real, physical *objects* such as cells embedded in our image. As such, we want to find those objects within our image.
 
