@@ -238,7 +238,7 @@ for i, animal in enumerate(animals):
     print('The animal in position {} is {}'.format(i, animal))
 ```
 
-## <span class="exercize">Exercise: draw the letter H</span>
+## <span class="exercize">Exercise 1: draw the letter H</span>
 
 Define a function that takes as input an RGB image and a pair of coordinates (row, column), and returns a copy with a green letter H overlaid at those coordinates. The coordinates point to the top-left corner of the H.
 
@@ -267,7 +267,7 @@ cat_H = draw_H(cat, (50, -50))
 plt.imshow(cat_H);
 ```
 
-## <span class="exercize">Exercise: visualizing RGB channels</span>
+## <span class="exercize">Exercise 2: visualizing RGB channels</span>
 
 Display the different color channels of the image along (each as a gray-scale image).  Start with the following template:
 
@@ -332,7 +332,7 @@ for (ax, channel) in zip(axes, [red, green, blue]):
     ax.axis('off')
 ```
 
-## Exercise: Convert to grayscale ("black and white")
+## Exercise 3: Convert to grayscale ("black and white")
 
 The *relative luminance* of an image is the intensity of light coming from each point. Different colors contribute differently to the luminance: it's very hard to have a bright, pure blue, for example. So, starting from an RGB image, the luminance is given by:
 
