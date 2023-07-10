@@ -44,7 +44,8 @@ desired functionality.
 - **widget**: allows custom Qt widgets (GUIs) to be added to napari, either from a `magic_factory` widget, a plain function, or a subclass of QWidget
 - **theme**: allows customization of the entire napari viewer appearance e.g. light theme or dark theme
 
-In this tutorial, we will create a spot detection plugin by implementing a widget contribution with the spot detection function (`detect_spots()`) we created in the first part of this practical session.
+In this tutorial, we will create a widget to run the watershed segmentation
+from previous part of this workshop.
 
 ## Using the cookiecutter template to create your plugin directory
 
@@ -161,17 +162,18 @@ the other files.
   as a package and installed by pip. the cookiecutter template has set
   everything up in these files, so you are good to go!
 - the `src/` folder contains all the python code for your plugin.
-- `src/napari_spot_detector/_widget.py`: This file contains example
+- `src/napari_watershed/_widget.py`: This file contains example
   implementations for different widget contributions. This is where you will
-  add your `detect_spot()` function.
-- the `src/napari_spot_detector/napari.yaml` file declares commands and
+  add your `points_watershed()` function.
+- the `src/napari_watershed/napari.yaml` file declares commands and
   contributions for each example widget in the `_widget.py` file. Look at these
   carefully and match up which command & contribution belong to what python
   code in the `_widget.py` file.
 
 You have now set up the directory for your new plugin! You can explore the
 directory and files with the file browser. In the next step, you will complete
-your plugin by adding your `detect_spots()` function to the `_widget.py` file.
+your plugin by adding your `points_watershed()` function to the `_widget.py`
+file.
 
 ## Implementing a function GUI
 
