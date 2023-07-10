@@ -86,7 +86,7 @@ Notice that "labels" is just a NumPy array with integer values. We have to be ca
 To look at images and associated data, *napari* provides additional functionality over matplotlib, including:
 - the canvas is OpenGL, interactive, and responsive
 - the canvas has *layers*, which can be individually shown or hidden
-- (the *killer app*) the viewer is *n-dimensional*, which comes in handy when your images are more than 2D, such as MRI data or (as below) microscopy data
+- the viewer is *n-dimensional*, which comes in handy when your images are more than 2D, such as MRI data or (as below) microscopy data
 
 Here's how to look at the same images with napari:
 
@@ -102,9 +102,9 @@ labels_as_image_layer = viewer.add_image(
 ### Exercise 0: play with the napari viewer
 
 - zoom with scroll, pan with click and drag
-- Try clicking on the 👁️ icon on each layer in the layer list to make them invisible or visible again
-- Try alt-clicking on the icon: this makes every other layer invisible
-- Try changing the opacity, colormap, or interpolation on a layer
+- try clicking on the 👁️ icon on each layer in the layer list to make them invisible or visible again
+- try alt-clicking on the icon: this makes every other layer invisible
+- try changing the opacity, colormap, or interpolation on a layer
 - try turning on "grid mode", from the group of buttons at the bottom-left of the viewer.
 - *select* the labels layer, click on the paintbrush tool, and tweak the segmentation where the two labels meet.
 
